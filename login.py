@@ -1,18 +1,26 @@
 from flask import Flask, render_template,url_for,request,session,redirect
 from flask_pymongo import PyMongo
 import bcrypt
+import NGO
 
 app = Flask(__name__)
 
 app.config['MONGO_DBNAME']='mongologinexample'
 app.config['MONGO_URI']='mongodb://localhost:27017/mongologinexample'
+#app.config['MONGO_URI']='mongodb+srv://arpitkubadia:arpit%40123@cluster0-rpcm0.mongodb.net/admin'
+
 
 mongo=PyMongo(app)
 
 @app.route('/')
 def index():
 	if 'username' in session:
-		return 'You are logged in as '+session['username']
+		users=mongo.db.users
+		details=users.find_one({'name':session['username']})
+		if details['type']=='NGO':
+			return redirect(url_for('ngo_page'))
+		elif details['type']=='Volunteer':
+			return redirect(url_for('volunteer_page'))
 	return render_template('index.html')
 
 @app.route('/login',methods=['POST'])
@@ -35,13 +43,31 @@ def login():
 
 	return 'Invalid username/password'
 			
-@app.route('/NGO')
+@app.route('/NGO',methods=['POST','GET'])
 def ngo_page():
 	return render_template('ngo.html',name=session['username'])
 
 @app.route('/Volunteer')
 def volunteer_page():
 	return render_template('volunteer.html',name=session['username'])
+
+
+@app.route('/new_job',methods=['POST'])
+def new_job():
+	jobs=mongo.db.jobs
+	existing_job=jobs.find_one({'title':request.form['title']})
+	if existing_job is None:
+		title=request.form['title']
+		owner=session['username']
+		description=request.form['description']
+		location=request.form['location']
+		duration=request.form['duration']
+
+		jobs.insert({'title':title,'owner':owner,'description':description,'location':location,'duration':duration})
+		return 'Job has been created'
+	else:	
+		return 'Job Exists'
+
 
 @app.route('/register',methods=['POST','GET'])
 def register():
@@ -54,7 +80,7 @@ def register():
 			users.insert({'name':request.form['username'],'password':hashpass,'type':request.form['category']})
 			session['username']=request.form['username']
 
-			if request.form['type']=='NGO':
+			if request.form['category']=='NGO':
 				return redirect(url_for('ngo_page'))
 			else:
 				return redirect(url_for('volunteer_page'))

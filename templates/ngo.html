@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block body %} 
+
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<h2 style="text-align: center;">Welcome to the NGO page {{name}}</h2>
+<div>
+ <a class="btn btn-outline-secondary btn-md btn-block" data-toggle="collapse" href="#newJob" role="button" aria-expanded="false" aria-controls="newJob">New Job</a>
+ <div class='row'>
+ 	<div class='col-md-12'>
+ 		<div class="collapse multi-collapse" id="newJob">
+	      <div class="card card-body">
+	        <form method="POST" action="{{ url_for('new_job') }}">
+	        	<div class="form-row">
+	        		<div class="form-group col-md-12">
+	        			<label for="title">Title</label>
+      					<input type="text" class="form-control" id="title" name="title" placeholder="Enter Title">
+	        		</div>
+	        	</div>
+	        	<div class="form-row">
+	        		<div class="form-group col-md-12">
+	        			<label for="description">Description</label>
+      					<textarea class="form-control" id="description" name="description" placeholder="Enter Description"></textarea>
+	        		</div>
+	        	</div>
+
+	        	<div class="form-row">
+	        		<div class="form-group col-md-6">
+	        			<label for="sel1">Duration:</label>
+						  <select class="form-control" id="duration" name="duration">
+						    <option>1 month</option>
+						    <option>2 months</option>
+						    <option>6 months</option>
+						  </select>
+	        		</div>
+
+	        		<div class="form-group col-md-6">
+	        			<label for="location">Location</label>
+      					<input type="text" class="form-control" id="location" name="location" placeholder="Enter Location">
+	        		</div>
+	        		
+	        	</div>
+
+	        	<button type="submit" class="btn btn-primary btn-block">Submit</button>
+	        </form>
+	      </div>
+	    </div>
+ 	</div>
+ </div>
+
+</div>
+
+
+{% endblock %}

@@ -4,9 +4,11 @@
 <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
 
+
 <h2 style="text-align: center;">Welcome to the NGO page {{name}}</h2>
+<br>
 <div>
- <a class="btn btn-outline-secondary btn-md btn-block" data-toggle="collapse" href="#newJob" role="button" aria-expanded="false" aria-controls="newJob">New Job</a>
+ <a class="btn btn-outline-primary btn-md btn-block" data-toggle="collapse" href="#newJob" role="button" aria-expanded="false" aria-controls="newJob">New Job</a>
  <div class='row'>
  	<div class='col-md-12'>
  		<div class="collapse multi-collapse" id="newJob">
@@ -50,6 +52,35 @@
  </div>
 
 </div>
+<br>
+<div>
+<a class="btn btn-outline-primary btn-md btn-block" data-toggle="collapse" href="#existingJobs" role="button" aria-expanded="false" aria-controls="existingJobs">View Existing Jobs</a>	
+
+
+ <div class='row'>
+ 	
+ 	<div class='col-md-12'>
+ 		<div class="collapse multi-collapse" id="existingJobs">
+	      {%for job in all_jobs%}
+	      <div class="card card-body">
+	        <h5 class="card-title">{{job.title}}</h5>
+	        <h6 class="card-subtitle mb-2 text-muted">{{job.location}}</h6>
+	        <p class="card-text">{{job.description}}</p>
+	        <h6 class="card-subtitle mb-2 text-muted">{{job.duration}}</h6>
+	        <h4>Applicants:</h4>
+	        	{%for applicant in job.applications%}
+	        		<h6>{{applicant}}</h6>
+	        	{%endfor%}
+	      </div>
+	      {% endfor %}
+	    </div>
+	    
+ 	</div>
+ </div>
+
+
+</div>
+
 
 
 {% endblock %}

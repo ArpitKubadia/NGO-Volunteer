@@ -2,6 +2,7 @@ from flask import Flask, render_template,url_for,request,session,redirect
 from flask_pymongo import PyMongo
 import bcrypt
 import NGO
+import json
 
 app = Flask(__name__)
 
@@ -23,6 +24,7 @@ def index():
 			return redirect(url_for('volunteer_page'))
 	return render_template('index.html')
 
+
 @app.route('/login',methods=['POST'])
 def login():
 	users=mongo.db.users
@@ -42,13 +44,21 @@ def login():
 		return 'Invalid username/password'
 
 	return 'Invalid username/password'
+
 			
 @app.route('/NGO',methods=['POST','GET'])
 def ngo_page():
-	return render_template('ngo.html',name=session['username'])
+	jobs=mongo.db.jobs
+	ngo_jobs=jobs.find({"owner":session['username']})
+	all_jobs=[]
+	for job in ngo_jobs:
+		all_jobs.append(job)
+	return render_template('ngo.html',name=session['username'],all_jobs=all_jobs)
+
 
 @app.route('/Volunteer')
 def volunteer_page():
+
 	return render_template('volunteer.html',name=session['username'])
 
 
@@ -63,10 +73,11 @@ def new_job():
 		location=request.form['location']
 		duration=request.form['duration']
 
-		jobs.insert({'title':title,'owner':owner,'description':description,'location':location,'duration':duration})
+		jobs.insert({'title':title,'owner':owner,'description':description,'location':location,'duration':duration,'applications':[]})
 		return 'Job has been created'
 	else:	
 		return 'Job Exists'
+
 
 
 @app.route('/register',methods=['POST','GET'])
